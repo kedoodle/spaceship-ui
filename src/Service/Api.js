@@ -61,3 +61,8 @@ export async function getInvestmentSummary() {
     const response = await axios.get("/v0/external/saver/account/investment-summary")
     return response.data
 }
+
+export async function getUnitPrices(portfolio="UNIVERSE", date="1970-01-01") {
+    const response = await axios.get(`/v0/external/saver/unit-price/graph?portfolio=${portfolio}&date=${date}`)
+    return response.data
+}
