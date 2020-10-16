@@ -1,5 +1,9 @@
 import axios from "axios";
-import { getAccessToken, getRefreshToken, setTokens } from "./Auth"
+import {
+    getAccessToken,
+    getRefreshToken,
+    setTokens
+} from "./Auth"
 
 // Add bearer token to axios requests
 axios.interceptors.request.use(

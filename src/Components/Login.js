@@ -1,5 +1,10 @@
-import React from 'react';
-import { Button, TextField } from '@material-ui/core';
+import React from "react";
+import {
+    Button,
+    Container,
+    Grid,
+    TextField
+} from "@material-ui/core";
 
 import { login } from "../Service/Api"
 import { setTokens } from "../Service/Auth"
@@ -49,25 +54,43 @@ class Login extends React.Component {
 
     render() {
         return (
-            <>
+            <Container maxWidth="xs">
                 <form onSubmit={this.handleSubmit}>
-                    <TextField
-                        name="username"
-                        label="Email address"
-                        type="email"
-                        variant="filled"
-                        onChange={this.handleChange}
-                    />
-                    <TextField
-                        name="password"
-                        label="Password"
-                        type="password"
-                        variant="filled"
-                        onChange={this.handleChange}
-                    />
-                    <Button type="submit">Login</Button>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="Email"
+                                        name="username"
+                                        size="small"
+                                        type="email"
+                                        variant="outlined"
+                                        onChange={this.handleChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="Password"
+                                        name="password"
+                                        size="small"
+                                        type="password"
+                                        variant="outlined"
+                                        onChange={this.handleChange}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button color="primary" fullWidth type="submit" variant="contained">
+                                Log in
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </form>
-            </>
+            </Container>
         );
     }
 }
