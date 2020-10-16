@@ -5,6 +5,7 @@ import {
     Route
 } from "react-router-dom";
 import {
+    Box,
     Button,
     Container,
     Typography
@@ -47,25 +48,31 @@ class App extends React.Component {
         const authenticated = this.state.authenticated;
 
         return (
-            <Container>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Spaceship UI <span aria-hidden="true" role="img">🚀</span>
-                </Typography>
-                {authenticated ?
-                    <>
-                        <Button variant="contained" onClick={this.signOut}>Sign out</Button>
-                        <Router>
-                            <Switch>
-                                <Route exact path="/">
-                                    <Dashboard />
-                                </Route>
-                            </Switch>
-                        </Router>
-                    </>
-                    :
-                    <Login setAuthenticated={this.setAuthenticated} />
-                }
-            </Container>
+            <Box mt={2}>
+                <Container>
+                    <Typography align="center" variant="h4" component="h1" gutterBottom>
+                        Spaceship UI <span aria-hidden="true" role="img">🚀</span>
+                    </Typography>
+                    {authenticated ?
+                        <>
+                            <Container maxWidth="xs">
+                                <Button fullWidth variant="contained" onClick={this.signOut}>Log out</Button>
+                            </Container>
+                            <Box mt={4}>
+                                <Router>
+                                    <Switch>
+                                        <Route exact path="/">
+                                            <Dashboard />
+                                        </Route>
+                                    </Switch>
+                                </Router>
+                            </Box>
+                        </>
+                        :
+                        <Login setAuthenticated={this.setAuthenticated} />
+                    }
+                </Container>
+            </Box>
         );
     }
 }
