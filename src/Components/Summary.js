@@ -1,11 +1,10 @@
 import React from "react";
 import {
-    Card,
-    CardContent,
     Typography
 } from "@material-ui/core";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { red, green } from "@material-ui/core/colors"
+
 import { formatAud } from "../utils/Formatter"
 
 const theme = createMuiTheme({
@@ -22,23 +21,21 @@ export const Summary = (props) => {
     const audReturn = parseFloat(data["aud_market_return"]);
     const isPositiveReturn = audReturn > 0;
     return (
-        <Card>
-            <CardContent>
-                <Typography color="textSecondary">
-                    Balance
+        <>
+            <Typography color="textSecondary">
+                Balance
+            </Typography>
+            <Typography variant="h4" component="h2" gutterBottom>
+                {formatAud(balance)}
+            </Typography>
+            <Typography color="textSecondary">
+                Returns
+            </Typography>
+            <ThemeProvider theme={theme}>
+                <Typography color={isPositiveReturn ? "primary" : "secondary"}>
+                    {formatAud(audReturn)}
                 </Typography>
-                <Typography variant="h4" component="h2">
-                    {formatAud(balance)}
-                </Typography>
-                <Typography color="textSecondary">
-                    Returns
-                </Typography>
-                <ThemeProvider theme={theme}>
-                    <Typography color={isPositiveReturn ? "primary" : "secondary"}>
-                        {formatAud(audReturn)}
-                    </Typography>
-                </ThemeProvider>
-            </CardContent>
-        </Card>
+            </ThemeProvider>
+        </>
     );
 }

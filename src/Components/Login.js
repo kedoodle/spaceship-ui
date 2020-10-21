@@ -47,7 +47,7 @@ class Login extends React.Component {
             .then(response => {
                 const tokens = JSON.stringify(response["auth"]);
                 setTokens(tokens);
-                this.props.setAuthenticated();
+                this.props.onAuthenticate();
             })
             .catch(error => console.log(error))
     }

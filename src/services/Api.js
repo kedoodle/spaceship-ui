@@ -57,6 +57,11 @@ export async function login(username, password) {
     return fetch("/v0/external/user/login", config)
 }
 
+export async function getUser() {
+    const response = await axios.get("/v0/external/user")
+    return response.data
+}
+
 export async function getAccountBalances() {
     const response = await axios.get("/v0/external/saver/account/graph")
     return response.data

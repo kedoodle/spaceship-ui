@@ -1,4 +1,9 @@
 import React from "react";
+import {
+    Box,
+    Grid,
+    Paper
+} from "@material-ui/core"
 
 import {
     getAccountBalances,
@@ -40,9 +45,22 @@ class Dashboard extends React.Component {
         const { data } = this.state;
         return (
             <>
-                {data && console.log(data.accountBalances)}
-                {data && <Summary data={data.investmentSummary} />}
-                {data && <div style={{ height: 500 }}><UnitPrice data={data.unitPrices} /></div>}
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Paper>
+                            <Box p={2}>
+                                {data && <Summary data={data.investmentSummary} />}
+                            </Box>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Paper>
+                            <Box p={2}>
+                                {data && <div style={{ height: 500 }}><UnitPrice data={data.unitPrices} /></div>}
+                            </Box>
+                        </Paper>
+                    </Grid>
+                </Grid>
             </>
         );
     }
