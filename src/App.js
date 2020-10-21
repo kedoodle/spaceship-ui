@@ -11,9 +11,9 @@ import {
     Typography
 } from "@material-ui/core";
 
-import Login from "./Components/Login"
-import { clearTokens } from "./Service/Auth";
-import Dashboard from "./Components/Dashboard"
+import Login from "./components/Login"
+import { clearTokens } from "./utils/Auth";
+import Dashboard from "./components/Dashboard"
 
 class App extends React.Component {
     constructor() {
