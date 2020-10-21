@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     BrowserRouter as Router,
     Switch,
@@ -10,77 +10,61 @@ import {
     Typography
 } from "@material-ui/core";
 
-import { getUser } from "./services/Api"
-import { clearTokens } from "./utils/Auth";
 import Login from "./components/Login"
 import AppBar from "./components/AppBar"
 import Dashboard from "./components/Dashboard"
+import { getUser } from "./services/Api"
+import { clearTokens, setTokens } from "./utils/Auth";
 
-class App extends React.Component {
-    constructor() {
-        super();
+function App() {
+    const [authenticated, setAuthenticated] = useState(localStorage.getItem("auth") && true);
+    const [userData, setUserData] = useState(null);
 
-        this.state = {
-            authenticated: null,
-            data: null
-        }
+    function signIn(tokens) {
+        setTokens(tokens);
+        setAuthenticated(true);
     }
 
-    componentDidMount() {
-        const auth = localStorage.getItem("auth")
-        if (auth) {
-            this.onAuthenticate()
-        }
-    }
-
-    onAuthenticate = () => {
-        this.setState({
-            authenticated: true
-        })
-        getUser().then(data => this.setState({data: data}))
-    }
-
-    signOut = () => {
+    function signOut() {
         clearTokens();
-        this.setState({
-            authenticated: false
-        })
+        setAuthenticated(false);
     }
 
-    render() {
-        const { authenticated, data } = this.state;
-        const name = data && data["contact"]["first_name"]
+    useEffect(() => {
+        authenticated && getUser().then(data => setUserData(data));
+    }, [authenticated]);
 
-        return (
-            <Box pt={10}>
-                <Container>
-                    {authenticated ?
-                        <>
-                            {data && <AppBar signOut={this.signOut} name={name} />}
-                            <Box mt={2}>
-                                <Router>
-                                    <Switch>
-                                        <Route exact path="/">
-                                            <Dashboard />
-                                        </Route>
-                                    </Switch>
-                                </Router>
-                            </Box>
-                        </>
-                        :
-                        <>
-                            <Typography align="center" variant="h4" component="h1" gutterBottom>
-                                Spaceship UI <span aria-hidden="true" role="img">🚀</span>
-                            </Typography>
-                            <Box mt={2}>
-                                <Login onAuthenticate={this.onAuthenticate} />
-                            </Box>
-                        </>
-                    }
-                </Container>
-            </Box>
-        );
-    }
+    const name = userData && userData["contact"]["first_name"]
+
+    return (
+        <Box pt={10}>
+            <Container>
+                {authenticated ?
+                    <>
+                        {userData && <AppBar signOut={signOut} name={name} />}
+                        <Box mt={2}>
+                            <Router>
+                                <Switch>
+                                    <Route exact path="/">
+                                        <Dashboard />
+                                    </Route>
+                                </Switch>
+                            </Router>
+                        </Box>
+                    </>
+                    :
+                    <>
+                        <Typography align="center" variant="h4" component="h1" gutterBottom>
+                            Spaceship UI <span aria-hidden="true" role="img">🚀</span>
+                        </Typography>
+                        <Box mt={2}>
+                            <Login signIn={signIn} />
+                        </Box>
+                    </>
+                }
+            </Container>
+        </Box>
+    );
 }
 
 export default App;
