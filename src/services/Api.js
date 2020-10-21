@@ -3,16 +3,16 @@ import {
     getAccessToken,
     getRefreshToken,
     setTokens
-} from "./Auth"
+} from "../utils/Auth"
 
 // Add bearer token to axios requests
 axios.interceptors.request.use(
     config => {
-        config.headers["Authorization"] = "Bearer " + getAccessToken();
-        return config;
+        config.headers["Authorization"] = "Bearer " + getAccessToken()
+        return config
     },
     error => {
-        return Promise.reject(error);
+        return Promise.reject(error)
     }
 );
 
@@ -33,8 +33,8 @@ axios.interceptors.response.use(
                 const promise = fetch("/v0/external/user/token/refresh", config)
                     .then(response => response.json())
                     .then(response => {
-                        const tokens = JSON.stringify(response["auth"]);
-                        setTokens(tokens);
+                        const tokens = JSON.stringify(response["auth"])
+                        setTokens(tokens)
                         return axios(error.config)
                     })
                 resolve(promise)
@@ -54,7 +54,17 @@ export async function login(username, password) {
                 "Authorization": "Basic " + btoa(username + ":" + password)
             }
         }
-    return fetch("/v0/external/user/login", config);
+    return fetch("/v0/external/user/login", config)
+}
+
+export async function getUser() {
+    const response = await axios.get("/v0/external/user")
+    return response.data
+}
+
+export async function getAccountBalances() {
+    const response = await axios.get("/v0/external/saver/account/graph")
+    return response.data
 }
 
 export async function getInvestmentSummary() {

@@ -1,9 +1,16 @@
 import React from "react";
+import {
+    Box,
+    Grid,
+    Paper
+} from "@material-ui/core"
 
 import {
+    getAccountBalances,
     getInvestmentSummary,
     getUnitPrices
-} from "../Service/Api"
+} from "../services/Api"
+import { Summary } from "./Summary"
 import { UnitPrice } from "./UnitPrice"
 
 class Dashboard extends React.Component {
@@ -17,6 +24,7 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
         const promises = [
+            getAccountBalances(),
             getInvestmentSummary(),
             getUnitPrices()
         ]
@@ -25,8 +33,9 @@ class Dashboard extends React.Component {
             .then(data => {
                 this.setState({
                     data: {
-                        investmentSummary: data[0],
-                        unitPrices: data[1]["unit_prices"]
+                        accountBalances: data[0]["graph_data"],
+                        investmentSummary: data[1],
+                        unitPrices: data[2]["unit_prices"]
                     }
                 });
             });
@@ -34,11 +43,24 @@ class Dashboard extends React.Component {
 
     render() {
         const { data } = this.state;
-
         return (
             <>
-                {/* {data && data.investmentSummary["aud_balance"]} */}
-                {data && <div style={{ height: 500 }}><UnitPrice data={data.unitPrices} /></div>}
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Paper>
+                            <Box p={2}>
+                                {data && <Summary data={data.investmentSummary} />}
+                            </Box>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Paper>
+                            <Box p={2}>
+                                {data && <div style={{ height: 500 }}><UnitPrice data={data.unitPrices} /></div>}
+                            </Box>
+                        </Paper>
+                    </Grid>
+                </Grid>
             </>
         );
     }

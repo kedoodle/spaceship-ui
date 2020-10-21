@@ -6,35 +6,38 @@ import {
 } from "react-router-dom";
 import {
     Box,
-    Button,
     Container,
     Typography
 } from "@material-ui/core";
 
-import Login from "./Components/Login"
-import { clearTokens } from "./Service/Auth";
-import Dashboard from "./Components/Dashboard"
+import { getUser } from "./services/Api"
+import { clearTokens } from "./utils/Auth";
+import Login from "./components/Login"
+import AppBar from "./components/AppBar"
+import Dashboard from "./components/Dashboard"
 
 class App extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            authenticated: null
+            authenticated: null,
+            data: null
         }
     }
 
     componentDidMount() {
         const auth = localStorage.getItem("auth")
         if (auth) {
-            this.setAuthenticated()
+            this.onAuthenticate()
         }
     }
 
-    setAuthenticated = () => {
+    onAuthenticate = () => {
         this.setState({
             authenticated: true
         })
+        getUser().then(data => this.setState({data: data}))
     }
 
     signOut = () => {
@@ -45,20 +48,16 @@ class App extends React.Component {
     }
 
     render() {
-        const authenticated = this.state.authenticated;
+        const { authenticated, data } = this.state;
+        const name = data && data["contact"]["first_name"]
 
         return (
-            <Box mt={2}>
+            <Box pt={10}>
                 <Container>
-                    <Typography align="center" variant="h4" component="h1" gutterBottom>
-                        Spaceship UI <span aria-hidden="true" role="img">🚀</span>
-                    </Typography>
                     {authenticated ?
                         <>
-                            <Container maxWidth="xs">
-                                <Button fullWidth variant="contained" onClick={this.signOut}>Log out</Button>
-                            </Container>
-                            <Box mt={4}>
+                            {data && <AppBar signOut={this.signOut} name={name} />}
+                            <Box mt={2}>
                                 <Router>
                                     <Switch>
                                         <Route exact path="/">
@@ -69,7 +68,14 @@ class App extends React.Component {
                             </Box>
                         </>
                         :
-                        <Login setAuthenticated={this.setAuthenticated} />
+                        <>
+                            <Typography align="center" variant="h4" component="h1" gutterBottom>
+                                Spaceship UI <span aria-hidden="true" role="img">🚀</span>
+                            </Typography>
+                            <Box mt={2}>
+                                <Login onAuthenticate={this.onAuthenticate} />
+                            </Box>
+                        </>
                     }
                 </Container>
             </Box>

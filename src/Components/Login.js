@@ -6,8 +6,8 @@ import {
     TextField
 } from "@material-ui/core";
 
-import { login } from "../Service/Api"
-import { setTokens } from "../Service/Auth"
+import { login } from "../services/Api"
+import { setTokens } from "../utils/Auth"
 
 class Login extends React.Component {
     constructor(props) {
@@ -47,7 +47,7 @@ class Login extends React.Component {
             .then(response => {
                 const tokens = JSON.stringify(response["auth"]);
                 setTokens(tokens);
-                this.props.setAuthenticated();
+                this.props.onAuthenticate();
             })
             .catch(error => console.log(error))
     }
