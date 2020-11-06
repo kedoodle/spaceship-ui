@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
     Typography
 } from "@material-ui/core";
+import moment from "moment";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { red, green } from "@material-ui/core/colors"
 
-import { getAccountBalances, getInvestmentSummary } from "../services/Api"
+import { getUnitPrices } from "../services/Api"
 import { formatAud } from "../utils/Formatter"
-import AccountBalanceGraph from "./AccountBalanceGraph";
+import UnitPriceGraph from "./UnitPriceGraph";
 
 const theme = createMuiTheme({
     palette: {
@@ -16,16 +17,14 @@ const theme = createMuiTheme({
     }
 });
 
-function Summary() {
-    const [accountBalanceData, setAccountBalanceData] = useState(null);
-    const [investmentSummaryData, setInvestmentSummaryData] = useState(null);
+export default function UnitPriceSummary() {
+    const [unitPriceData, setUnitPriceData] = useState(null);
     const [loaded, setLoaded] = useState(null);
 
     function getData() {
-        Promise.all([getAccountBalances(), getInvestmentSummary()])
+        Promise.all([getUnitPrices()])
             .then(values => {
-                setAccountBalanceData(values[0]["graph_data"]);
-                setInvestmentSummaryData(values[1]);
+                setUnitPriceData(values[0]["unit_prices"]);
                 setLoaded(true);
         });
     }
@@ -34,31 +33,29 @@ function Summary() {
         getData();
     }, []);
 
-    const balance = loaded && parseFloat(investmentSummaryData.aud_balance);
-    const audReturn = loaded && parseFloat(investmentSummaryData["aud_market_return"]);
+    const latestData = loaded && unitPriceData[unitPriceData.length - 1]
+    const date = latestData && moment(latestData.date).format("dddd D MMMM");
+    const unitPrice = latestData && parseFloat(latestData.aud_price);
 
-    const isPositiveReturn = audReturn > 0;
     return (
         <>
             <Typography color="textSecondary">
-                Balance
+                Unit Price as at {date}
             </Typography>
             <Typography variant="h4" component="h2" gutterBottom>
-                {formatAud(balance)}
+                {formatAud(unitPrice, 20)}
             </Typography>
             <Typography color="textSecondary">
-                Returns
+            Lorem
             </Typography>
             <ThemeProvider theme={theme}>
-                <Typography color={isPositiveReturn ? "primary" : "secondary"}>
-                    {formatAud(audReturn)}
+                <Typography color={true ? "primary" : "secondary"}>
+                    ipsum
                 </Typography>
             </ThemeProvider>
             <div style={{ height: 200 }}>
-                <AccountBalanceGraph data={accountBalanceData}/>
+                <UnitPriceGraph data={unitPriceData}/>
             </div>
         </>
     );
 }
-
-export default Summary;

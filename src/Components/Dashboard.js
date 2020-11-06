@@ -5,59 +5,28 @@ import {
     Paper
 } from "@material-ui/core"
 
-import {
-    getUnitPrices
-} from "../services/Api"
-import Summary from "./Summary"
-import UnitPriceGraph from "./UnitPriceGraph"
+import BalanceSummary from "./BalanceSummary"
+import UnitPriceSummary from "./UnitPriceSummary"
 
-class Dashboard extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            data: null
-        }
-    };
-
-    componentDidMount() {
-        const promises = [
-            getUnitPrices()
-        ]
-
-        Promise.all(promises)
-            .then(data => {
-                this.setState({
-                    data: {
-                        unitPrices: data[0]["unit_prices"]
-                    }
-                });
-            });
-    }
-
-    render() {
-        const { data } = this.state;
-        return (
-            <>
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <Paper>
-                            <Box p={3}>
-                                <Summary />
-                            </Box>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Paper>
-                            <Box p={3}>
-                                {data && <div style={{ height: 200 }}><UnitPriceGraph data={data.unitPrices} /></div>}
-                            </Box>
-                        </Paper>
-                    </Grid>
+export default function Dashboard() {
+    return (
+        <>
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
+                    <Paper>
+                        <Box p={3}>
+                            <BalanceSummary />
+                        </Box>
+                    </Paper>
                 </Grid>
-            </>
-        );
-    }
+                <Grid item xs={6}>
+                    <Paper>
+                        <Box p={3}>
+                            {<UnitPriceSummary />}
+                        </Box>
+                    </Paper>
+                </Grid>
+            </Grid>
+        </>
+    );
 }
-
-export default Dashboard;
