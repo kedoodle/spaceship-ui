@@ -9,7 +9,7 @@ import {
     getUnitPrices
 } from "../services/Api"
 import Summary from "./Summary"
-import { UnitPrice } from "./UnitPrice"
+import UnitPriceGraph from "./UnitPriceGraph"
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -50,7 +50,7 @@ class Dashboard extends React.Component {
                     <Grid item xs={6}>
                         <Paper>
                             <Box p={3}>
-                                {data && <div style={{ height: 500 }}><UnitPrice data={data.unitPrices} /></div>}
+                                {data && <div style={{ height: 200 }}><UnitPriceGraph data={data.unitPrices} /></div>}
                             </Box>
                         </Paper>
                     </Grid>

@@ -4,19 +4,19 @@ import { ResponsiveLine } from "@nivo/line";
 
 import { formatAud } from "../utils/Formatter"
 
-export default function AccountBalanceGraph(props) {
+export default function UnitPriceGraph(props) {
     var data = props.data;
     if (!data) return null;
     Object.keys(data).forEach(key => {
         data[key].x = data[key].date;
-        data[key].y = data[key].balance;
+        data[key].y = data[key].aud_price;
     });
 
     return (
         <ResponsiveLine
             data={[
                 {
-                    id: "Balance",
+                    id: "Unit prices",
                     data: data
                 }
             ]}
@@ -24,7 +24,7 @@ export default function AccountBalanceGraph(props) {
             xScale={{ format: "%Y-%m-%d", type: "time" }}
             xFormat={date => moment(date).format("DD MMM YYYY")}
             yScale={{ type: "linear", min: "auto"}}
-            yFormat={balance => formatAud(balance)}
+            yFormat={price => formatAud(price, 20)}
             axisBottom={null}
             axisLeft={null}
             enableGridX={false}
