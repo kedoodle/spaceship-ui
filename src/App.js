@@ -14,10 +14,10 @@ import Login from "./components/Login"
 import AppBar from "./components/AppBar"
 import Dashboard from "./components/Dashboard"
 import { getUser } from "./services/Api"
-import { clearTokens, setTokens } from "./utils/Auth";
+import { clearTokens, getTokens, setTokens } from "./utils/Auth";
 
 function App() {
-    const [authenticated, setAuthenticated] = useState(localStorage.getItem("auth") && true);
+    const [authenticated, setAuthenticated] = useState(getTokens());
     const [userData, setUserData] = useState(null);
 
     function signIn(tokens) {
