@@ -1,7 +1,3 @@
-export function getTokens(auth) {
-    sessionStorage.getItem("auth");
-}
-
 export function setTokens(auth) {
     sessionStorage.setItem("auth", auth);
 }
