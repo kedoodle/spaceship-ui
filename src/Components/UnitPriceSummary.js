@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
     Typography
 } from "@material-ui/core";
@@ -6,9 +6,9 @@ import moment from "moment";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { red, green } from "@material-ui/core/colors"
 
-import { getUnitPrices } from "../services/Api"
 import { formatAud } from "../utils/Formatter"
 import UnitPriceGraph from "./UnitPriceGraph";
+import { Context } from "../utils/Store";
 
 const theme = createMuiTheme({
     palette: {
@@ -18,22 +18,10 @@ const theme = createMuiTheme({
 });
 
 export default function UnitPriceSummary() {
-    const [unitPriceData, setUnitPriceData] = useState(null);
-    const [loaded, setLoaded] = useState(null);
+    const [state] = useContext(Context);
+    const unitPrices = state["unitPrices"];
 
-    function getData() {
-        Promise.all([getUnitPrices()])
-            .then(values => {
-                setUnitPriceData(values[0]["unit_prices"]);
-                setLoaded(true);
-        });
-    }
-
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const latestData = loaded && unitPriceData[unitPriceData.length - 1]
+    const latestData = unitPrices && unitPrices[unitPrices.length - 1]
     const date = latestData && moment(latestData.date).format("dddd D MMMM");
     const unitPrice = latestData && parseFloat(latestData.aud_price);
 
@@ -54,7 +42,7 @@ export default function UnitPriceSummary() {
                 </Typography>
             </ThemeProvider>
             <div style={{ height: 200 }}>
-                <UnitPriceGraph data={unitPriceData}/>
+                <UnitPriceGraph data={unitPrices}/>
             </div>
         </>
     );

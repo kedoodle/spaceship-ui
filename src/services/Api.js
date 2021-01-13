@@ -67,6 +67,11 @@ export async function getAccountBalances() {
     return response.data
 }
 
+export async function getInvestmentHistory() {
+    const response = await axios.get("/v0/external/saver/account/investment-history")
+    return response.data
+}
+
 export async function getInvestmentSummary() {
     const response = await axios.get("/v0/external/saver/account/investment-summary")
     return response.data

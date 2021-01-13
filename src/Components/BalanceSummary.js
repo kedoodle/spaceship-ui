@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
     Typography
 } from "@material-ui/core";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { red, green } from "@material-ui/core/colors"
 
-import { getAccountBalances, getInvestmentSummary } from "../services/Api"
 import { formatAud } from "../utils/Formatter"
 import AccountBalanceGraph from "./AccountBalanceGraph";
+import { Context } from "../utils/Store";
 
 const theme = createMuiTheme({
     palette: {
@@ -17,25 +17,12 @@ const theme = createMuiTheme({
 });
 
 export default function BalanceSummary() {
-    const [accountBalanceData, setAccountBalanceData] = useState(null);
-    const [investmentSummaryData, setInvestmentSummaryData] = useState(null);
-    const [loaded, setLoaded] = useState(null);
+    const [state] = useContext(Context);
+    const accountBalances = state.accountBalances;
+    const investmentSummary = state.investmentSummary;
 
-    function getData() {
-        Promise.all([getAccountBalances(), getInvestmentSummary()])
-            .then(values => {
-                setAccountBalanceData(values[0]["graph_data"]);
-                setInvestmentSummaryData(values[1]);
-                setLoaded(true);
-        });
-    }
-
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const balance = loaded && parseFloat(investmentSummaryData.aud_balance);
-    const audReturn = loaded && parseFloat(investmentSummaryData["aud_market_return"]);
+    const balance = investmentSummary && parseFloat(investmentSummary["aud_balance"]);
+    const audReturn = investmentSummary && parseFloat(investmentSummary["aud_market_return"]);
 
     const isPositiveReturn = audReturn > 0;
     return (
@@ -55,7 +42,7 @@ export default function BalanceSummary() {
                 </Typography>
             </ThemeProvider>
             <div style={{ height: 200 }}>
-                <AccountBalanceGraph data={accountBalanceData}/>
+                <AccountBalanceGraph data={accountBalances}/>
             </div>
         </>
     );

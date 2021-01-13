@@ -5,11 +5,14 @@ import * as serviceWorker from "./serviceWorker";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "fontsource-roboto";
+import Store from "./utils/Store";
 
 ReactDOM.render(
   <React.StrictMode>
     <CssBaseline />
-    <App />
+    <Store>
+      <App />
+    </Store>
   </React.StrictMode>,
   document.getElementById("root")
 );

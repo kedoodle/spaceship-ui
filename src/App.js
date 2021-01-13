@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     BrowserRouter as Router,
     Switch,
@@ -13,12 +13,31 @@ import {
 import Login from "./components/Login"
 import AppBar from "./components/AppBar"
 import Dashboard from "./components/Dashboard"
-import { getUser } from "./services/Api"
+import { getAccountBalances, getInvestmentHistory, getInvestmentSummary, getUnitPrices, getUser } from "./services/Api"
 import { clearTokens, setTokens } from "./utils/Auth";
+import { Actions, Context } from "./utils/Store";
 
-function App() {
+export default function App() {
     const [authenticated, setAuthenticated] = useState(sessionStorage.getItem("auth") && true);
-    const [userData, setUserData] = useState(null);
+    const [state, dispatch] = useContext(Context);
+    const user = state.user;
+
+    const populateStore = () => {
+        Promise.all([getAccountBalances(), getInvestmentHistory(), getInvestmentSummary(), getUnitPrices(), getUser()])
+            .then(values => {
+                dispatch({type: Actions.SET_ACCOUNT_BALANCES, payload: values[0]["graph_data"]});
+                dispatch({type: Actions.SET_INVESTMENT_HISTORY, payload: values[1]});
+                dispatch({type: Actions.SET_INVESTMENT_SUMMARY, payload: values[2]});
+                dispatch({type: Actions.SET_UNIT_PRICES, payload: values[3]["unit_prices"]});
+                dispatch({type: Actions.SET_USER, payload: values[4]});
+        });
+    }
+
+    useEffect(() => {
+        authenticated && populateStore()
+    }, [authenticated]);
+
+    const name = user && user["contact"]["first_name"]
 
     function signIn(tokens) {
         setTokens(tokens);
@@ -30,18 +49,12 @@ function App() {
         setAuthenticated(false);
     }
 
-    useEffect(() => {
-        authenticated && getUser().then(data => setUserData(data));
-    }, [authenticated]);
-
-    const name = userData && userData["contact"]["first_name"]
-
     return (
         <Box pt={10}>
             <Container>
                 {authenticated ?
                     <>
-                        {userData && <AppBar signOut={signOut} name={name} />}
+                        <AppBar signOut={signOut} name={name} />
                         <Box mt={2}>
                             <Router>
                                 <Switch>
@@ -66,5 +79,3 @@ function App() {
         </Box>
     );
 }
-
-export default App;
